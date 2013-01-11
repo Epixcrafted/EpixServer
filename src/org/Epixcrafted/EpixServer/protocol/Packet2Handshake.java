@@ -23,12 +23,10 @@ public class Packet2Handshake extends Packet{
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < length; i++) sb.append(buf.readChar());
 		username = sb.toString();
-		if (protocol == -1) { //support non-epix clients just for proper disconnect of them
-			length = buf.readShort();
-			sb = new StringBuilder();
-			for (int i = 0; i < length; i++) sb.append(buf.readChar());
-			password = sb.toString();
-		}
+		length = buf.readShort();
+		sb = new StringBuilder();
+		for (int i = 0; i < length; i++) sb.append(buf.readChar());
+		password = sb.toString();
 		length = buf.readShort();
 		sb = new StringBuilder();
 		for (int i = 0; i < length; i++) sb.append(buf.readChar());

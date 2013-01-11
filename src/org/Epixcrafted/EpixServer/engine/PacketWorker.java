@@ -1,9 +1,11 @@
 package org.Epixcrafted.EpixServer.engine;
 
 import org.Epixcrafted.EpixServer.EpixServer;
+import org.Epixcrafted.EpixServer.chat.Colour;
 import org.Epixcrafted.EpixServer.engine.player.Player;
 import org.Epixcrafted.EpixServer.engine.player.Session;
 import org.Epixcrafted.EpixServer.engine.player.Session.Connection;
+import org.Epixcrafted.EpixServer.login.LoginExecutor;
 import org.Epixcrafted.EpixServer.protocol.Packet;
 import org.Epixcrafted.EpixServer.protocol.Packet10Fly;
 import org.Epixcrafted.EpixServer.protocol.Packet11Pos;
@@ -78,6 +80,13 @@ public class PacketWorker {
 			session.disconnect("You should use EpixClient to enter this server");
 			return;
 		}
+		
+		LoginExecutor logExecutor = new LoginExecutor(this.server);
+		if(!logExecutor.check(packet.username, packet.password)) {
+			session.disconnect("Player \""+Colour.DARK_RED+packet.username+Colour.RESET+"\"not found !");
+			return;
+		}
+		
 		session.setPlayer(new Player(session, -1, packet.username));
 		if (server.getSessionListClass().isExists(session, packet.username)) {
 			session.disconnect("This player is already online!");

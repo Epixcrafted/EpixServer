@@ -38,6 +38,7 @@ public class EpixServer implements IServer {
 	private String mysqlUser;
 	private String mysqlPass;
 	private String mysqlDB;
+	private String mysqlSalt;
 	
 	private MySQL mysql;
 	
@@ -124,6 +125,10 @@ public class EpixServer implements IServer {
 		return mysql;
 	}
 	
+	public String getMySQLSalt() {
+		return mysqlSalt;
+	}
+	
 	public List<World> getWorldList() {
 		return Collections.<World> emptyList();
 	}
@@ -163,6 +168,7 @@ public class EpixServer implements IServer {
 		this.mysqlUser = settings.getStringProperty("mysql_user", "root");
 		this.mysqlPass = settings.getStringProperty("mysql_pass", "");
 		this.mysqlDB = settings.getStringProperty("mysql_db", "mc");
+		this.mysqlSalt = settings.getStringProperty("mysql_salt", "");
 	}
 	
 	private void setupConsole() {
