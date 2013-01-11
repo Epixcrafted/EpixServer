@@ -18,7 +18,7 @@ public class Packet56MapChunks extends Packet {
     private int dataLength;
     private static byte[] chunkDataNotCompressed = new byte[0];
 
-	public Packet56MapChunks(List chunks) {
+	public Packet56MapChunks(List<?> chunks) {
 		int c_size = chunks.size();
         this.chunkPosX = new int[c_size];
         this.chunkPosZ = new int[c_size];

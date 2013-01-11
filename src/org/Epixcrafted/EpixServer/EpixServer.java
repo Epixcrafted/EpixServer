@@ -3,6 +3,8 @@ package org.Epixcrafted.EpixServer;
 import java.io.File;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
@@ -10,13 +12,12 @@ import java.util.logging.Logger;
 import org.Epixcrafted.EpixServer.chat.CommandSender;
 import org.Epixcrafted.EpixServer.chat.ConsoleSender;
 import org.Epixcrafted.EpixServer.chat.commands.AllCommands;
-import org.Epixcrafted.EpixServer.chat.commands.CommandList;
 import org.Epixcrafted.EpixServer.engine.ConsoleLogManager;
 import org.Epixcrafted.EpixServer.engine.EpixPipelineFactory;
-import org.Epixcrafted.EpixServer.engine.Server;
+import org.Epixcrafted.EpixServer.engine.IServer;
 import org.Epixcrafted.EpixServer.engine.player.Session;
 import org.Epixcrafted.EpixServer.engine.player.SessionList;
-import org.Epixcrafted.EpixServer.mc.entity.EntityPlayer;
+import org.Epixcrafted.EpixServer.mc.world.World;
 import org.Epixcrafted.EpixServer.mysql.MySQL;
 import org.Epixcrafted.EpixServer.mysql.MySQLHandler;
 import org.Epixcrafted.EpixServer.threads.ConsoleReaderThread;
@@ -24,13 +25,12 @@ import org.Epixcrafted.EpixServer.threads.TickCounter;
 
 import org.jboss.netty.bootstrap.ServerBootstrap;
 import org.jboss.netty.channel.Channel;
-import org.jboss.netty.channel.ChannelFactory;
 import org.jboss.netty.channel.group.ChannelGroup;
 import org.jboss.netty.channel.group.DefaultChannelGroup;
 import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
 import org.jboss.netty.handler.execution.OrderedMemoryAwareThreadPoolExecutor;
 
-public class EpixServer implements Server {
+public class EpixServer implements IServer {
 	
 	private String ip;
 	private int port;
@@ -50,7 +50,7 @@ public class EpixServer implements Server {
 	
 	private int maxPlayers;
 	
-	public static int lastEntityId = 0; //TODO: move this to an another place!
+	public static int lastEntityId = 0;
 	
 	public EpixServer() {
 		ConsoleLogManager.init();
@@ -122,6 +122,10 @@ public class EpixServer implements Server {
 	
 	public MySQL getMySQL() {
 		return mysql;
+	}
+	
+	public List<World> getWorldList() {
+		return Collections.<World> emptyList();
 	}
 	
 	@Override

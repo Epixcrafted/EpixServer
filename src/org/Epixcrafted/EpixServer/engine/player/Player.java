@@ -3,7 +3,7 @@ package org.Epixcrafted.EpixServer.engine.player;
 import java.net.InetSocketAddress;
 
 import org.Epixcrafted.EpixServer.chat.CommandSender;
-import org.Epixcrafted.EpixServer.engine.Server;
+import org.Epixcrafted.EpixServer.engine.IServer;
 import org.Epixcrafted.EpixServer.mc.entity.EntityPlayer;
 import org.Epixcrafted.EpixServer.protocol.Packet3Chat;
 
@@ -50,7 +50,7 @@ public class Player extends EntityPlayer implements CommandSender {
 	}
 	
 	@Override
-	public Server getServer() {
+	public IServer getServer() {
 		return session.getServer();
 	}
 

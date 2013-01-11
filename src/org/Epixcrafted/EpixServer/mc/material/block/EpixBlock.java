@@ -13,8 +13,14 @@ public class EpixBlock implements Block {
 	private int x;
 	private int y;
 	private int z;
+	
+	private Biome biome;
+	private Chunk chunk;
+	private World world;
+	
+	private boolean isPowered;
 	private boolean needsRandomTick;
-
+	
 	public EpixBlock(int id) {
 		this.id = id;
 	}
@@ -56,17 +62,18 @@ public class EpixBlock implements Block {
 
 	@Override
 	public Biome getBiome() {
-		return null;
+		return biome;
 	}
 
 	@Override
 	public Chunk getChunk() {
-		return null;
+		if (chunk != null) return chunk;
+		return chunk = world.getChunkAt(this.x/16, this.z/16);
 	}
 
 	@Override
 	public World getWorld() {
-		return null;
+		return world;
 	}
 
 	@Override
@@ -94,7 +101,7 @@ public class EpixBlock implements Block {
 
 	@Override
 	public boolean isPowered() {
-		return false;
+		return isPowered;
 	}
 
 	@Override
@@ -105,7 +112,6 @@ public class EpixBlock implements Block {
 	@Override
 	public void setMaterial(Material material) {
 		this.id = material.getId();
-		
 	}
 
 	@Override
@@ -137,12 +143,12 @@ public class EpixBlock implements Block {
 
 	@Override
 	public void setBiome(Biome biome) {
-		//TODO
+		this.biome = biome;
 	}
 
 	@Override
 	public void setWorld(World world) {
-		// TODO
+		this.world = world;
 	}
 	
 	public void setTickRandomly(boolean need)

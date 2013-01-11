@@ -1,19 +1,9 @@
 package org.Epixcrafted.EpixServer.engine;
 
-import java.util.Iterator;
-import java.util.logging.Level;
-
 import org.Epixcrafted.EpixServer.EpixServer;
-import org.Epixcrafted.EpixServer.Main;
-import org.Epixcrafted.EpixServer.chat.Colour;
-import org.Epixcrafted.EpixServer.engine.player.Player;
 import org.Epixcrafted.EpixServer.engine.player.Session;
-import org.Epixcrafted.EpixServer.mc.entity.EntityPlayer;
 import org.Epixcrafted.EpixServer.misc.NotSupportedOperationException;
 import org.Epixcrafted.EpixServer.protocol.Packet;
-import org.Epixcrafted.EpixServer.protocol.Packet29DestroyEntity;
-import org.Epixcrafted.EpixServer.protocol.Packet3Chat;
-import org.jboss.netty.buffer.ChannelBuffers;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.ChannelStateEvent;
 import org.jboss.netty.channel.ExceptionEvent;

@@ -1,6 +1,8 @@
 package org.Epixcrafted.EpixServer.engine;
 
-public interface Server {
+import java.util.logging.Logger;
+
+public interface IServer {
 
 	public void start();
 	
@@ -13,5 +15,7 @@ public interface Server {
 	public String[] getOnlinePlayers();
 	
 	public int getMaximumPlayers();
+
+	public Logger getLogger();
 
 }

@@ -1,15 +1,16 @@
 package org.Epixcrafted.EpixServer.threads;
 
 import org.Epixcrafted.EpixServer.EpixServer;
+import org.Epixcrafted.EpixServer.mc.world.World;
 
-public class UpdateEntityExecutor extends Thread implements Runnable {
-	
+public class UpdateWorldExecutor extends Thread implements Runnable {
+
 	private static int threadNum = 0;
 	private EpixServer server;
 
-	public UpdateEntityExecutor(EpixServer server) {
+	public UpdateWorldExecutor(EpixServer server) {
 		this.server = server;
-		this.setName("UpdateEntityExecutor-#" + ++threadNum);
+		this.setName("UpdateWorldExecutor-#" + ++threadNum);
 		this.setDaemon(false);
 	}
 	
@@ -25,8 +26,8 @@ public class UpdateEntityExecutor extends Thread implements Runnable {
 	}
 	
 	public void update() {
-		synchronized(server.getSessionListClass()) {
-			server.getSessionListClass().update();
+		synchronized(server.getWorldList()) {
+			for (World world : server.getWorldList()) world.update();
 		}
 	}
 }

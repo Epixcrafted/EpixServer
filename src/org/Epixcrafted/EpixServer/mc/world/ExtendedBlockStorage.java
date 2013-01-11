@@ -1,18 +1,44 @@
 package org.Epixcrafted.EpixServer.mc.world;
 
-import org.Epixcrafted.EpixServer.mc.material.block.Block;
 import org.Epixcrafted.EpixServer.mc.material.block.BlockList;
 
 public class ExtendedBlockStorage
 {
-    
+    /**
+     * Contains the bottom-most Y block represented by this ExtendedBlockStorage. Typically a multiple of 16.
+     */
     private int yBase;
+
+    /**
+     * A total count of the number of non-air blocks in this block storage's Chunk.
+     */
     private int blockRefCount;
+
+    /**
+     * Contains the number of blocks in this block storage's parent chunk that require random ticking. Used to cull the
+     * Chunk from random tick updates for performance reasons.
+     */
     private int tickRefCount;
+
+    /**
+     * Contains the least significant 8 bits of each block ID belonging to this block storage's parent Chunk.
+     */
     private byte[] blockLSBArray;
+
+    /**
+     * Contains the most significant 4 bits of each block ID belonging to this block storage's parent Chunk.
+     */
     private NibbleArray blockMSBArray;
+
+    /**
+     * Stores the metadata associated with blocks in this ExtendedBlockStorage.
+     */
     private NibbleArray blockMetadataArray;
+
+    /** The NibbleArray containing a block of Block-light data. */
     private NibbleArray blocklightArray;
+
+    /** The NibbleArray containing a block of Sky-light data. */
     private NibbleArray skylightArray;
 
     public ExtendedBlockStorage(int par1)
@@ -24,11 +50,14 @@ public class ExtendedBlockStorage
         this.blocklightArray = new NibbleArray(this.blockLSBArray.length, 4);
     }
 
-    
-    public int getExtBlockID(int x, int y, int z)
+    /**
+     * Returns the extended block ID for a location in a chunk, merged from a byte array and a NibbleArray to form a
+     * full 12-bit block ID.
+     */
+    public int getExtBlockID(int par1, int par2, int par3)
     {
-        int var4 = this.blockLSBArray[y << 8 | z << 4 | x] & 255;
-        return this.blockMSBArray != null ? this.blockMSBArray.get(x, y, z) << 8 | var4 : var4;
+        int var4 = this.blockLSBArray[par2 << 8 | par3 << 4 | par1] & 255;
+        return this.blockMSBArray != null ? this.blockMSBArray.get(par1, par2, par3) << 8 | var4 : var4;
     }
 
     /**
@@ -36,71 +65,73 @@ public class ExtendedBlockStorage
      * a byte array. Also performs reference counting to determine whether or not to broadly cull this Chunk from the
      * random-update tick list.
      */
-    public void setExtBlockID(int x, int y, int z, int id)
+    public void setExtBlockID(int par1, int par2, int par3, int par4)
     {
-        int blockLSB = this.blockLSBArray[y << 8 | z << 4 | x] & 255;
+        int var5 = this.blockLSBArray[par2 << 8 | par3 << 4 | par1] & 255;
 
         if (this.blockMSBArray != null)
         {
-            blockLSB |= this.blockMSBArray.get(x, y, z) << 8;
+            var5 |= this.blockMSBArray.get(par1, par2, par3) << 8;
         }
 
-        if (blockLSB == 0 && id != 0)
+        if (var5 == 0 && par4 != 0)
         {
             ++this.blockRefCount;
 
-            if (BlockList.get(id) != null && BlockList.get(id).getTickRandomly())
+            if (BlockList.get(par4) != null && BlockList.get(par4).getTickRandomly())
             {
                 ++this.tickRefCount;
             }
         }
-        else if (blockLSB != 0 && id == 0)
+        else if (var5 != 0 && par4 == 0)
         {
             --this.blockRefCount;
 
-            if (BlockList.get(blockLSB) != null && BlockList.get(blockLSB).getTickRandomly())
+            if (BlockList.get(var5) != null && BlockList.get(var5).getTickRandomly())
             {
                 --this.tickRefCount;
             }
         }
-        else if (BlockList.get(blockLSB) != null && BlockList.get(blockLSB).getTickRandomly() && BlockList.get(id) == null || !BlockList.get(id).getTickRandomly())
+        else if (BlockList.get(var5) != null && BlockList.get(var5).getTickRandomly() && (BlockList.get(par4) == null || !BlockList.get(par4).getTickRandomly()))
         {
             --this.tickRefCount;
         }
-        else if ((BlockList.get(blockLSB) == null || !BlockList.get(blockLSB).getTickRandomly()) && BlockList.get(id) != null && BlockList.get(id).getTickRandomly())
+        else if ((BlockList.get(var5) == null || !BlockList.get(var5).getTickRandomly()) && BlockList.get(par4) != null && BlockList.get(par4).getTickRandomly())
         {
             ++this.tickRefCount;
         }
 
-        this.blockLSBArray[y << 8 | z << 4 | x] = (byte)(id & 255);
+        this.blockLSBArray[par2 << 8 | par3 << 4 | par1] = (byte)(par4 & 255);
 
-        if (id > 255)
+        if (par4 > 255)
         {
             if (this.blockMSBArray == null)
             {
                 this.blockMSBArray = new NibbleArray(this.blockLSBArray.length, 4);
             }
 
-            this.blockMSBArray.set(x, y, z, (id & 3840) >> 8);
+            this.blockMSBArray.set(par1, par2, par3, (par4 & 3840) >> 8);
         }
         else if (this.blockMSBArray != null)
         {
-            this.blockMSBArray.set(x, y, z, 0);
+            this.blockMSBArray.set(par1, par2, par3, 0);
         }
     }
 
     /**
      * Returns the metadata associated with the block at the given coordinates in this ExtendedBlockStorage.
      */
-    public int getExtBlockMetadata(int x, int y, int z)
+    public int getExtBlockMetadata(int par1, int par2, int par3)
     {
-        return this.blockMetadataArray.get(x, y, z);
+        return this.blockMetadataArray.get(par1, par2, par3);
     }
 
-    
-    public void setExtBlockMetadata(int x, int y, int z, int id)
+    /**
+     * Sets the metadata of the Block at the given coordinates in this ExtendedBlockStorage to the given metadata.
+     */
+    public void setExtBlockMetadata(int par1, int par2, int par3, int par4)
     {
-        this.blockMetadataArray.set(x, y, z, id);
+        this.blockMetadataArray.set(par1, par2, par3, par4);
     }
 
     /**
@@ -204,6 +235,11 @@ public class ExtendedBlockStorage
         return this.blockLSBArray;
     }
 
+    public void func_76676_h()
+    {
+        this.blockMSBArray = null;
+    }
+
     /**
      * Returns the block ID MSB (bits 11..8) array for this storage array's Chunk.
      */
@@ -271,5 +307,15 @@ public class ExtendedBlockStorage
     public void setSkylightArray(NibbleArray par1NibbleArray)
     {
         this.skylightArray = par1NibbleArray;
+    }
+
+    /**
+     * Called by a Chunk to initialize the MSB array if getBlockMSBArray returns null. Returns the newly-created
+     * NibbleArray instance.
+     */
+    public NibbleArray createBlockMSBArray()
+    {
+        this.blockMSBArray = new NibbleArray(this.blockLSBArray.length, 4);
+        return this.blockMSBArray;
     }
 }

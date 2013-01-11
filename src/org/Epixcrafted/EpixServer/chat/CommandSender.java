@@ -1,12 +1,12 @@
 package org.Epixcrafted.EpixServer.chat;
 
-import org.Epixcrafted.EpixServer.engine.Server;
+import org.Epixcrafted.EpixServer.engine.IServer;
 
 public interface CommandSender {
 
 	public String getName();
 	
-	public Server getServer();
+	public IServer getServer();
 	
 	public void sendMessage(String message);
 }

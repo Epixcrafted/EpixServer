@@ -1,7 +1,6 @@
 package org.Epixcrafted.EpixServer.protocol;
 
 import java.util.zip.Deflater;
-import java.util.zip.Inflater;
 
 import org.Epixcrafted.EpixServer.mc.world.Chunk;
 import org.Epixcrafted.EpixServer.mc.world.ExtendedBlockStorage;
@@ -16,7 +15,7 @@ public class Packet51MapChunk extends Packet {
     public int yChMin;
     public int yChMax;
     private byte[] chunkData;
-    private byte[] compressedChunkData;
+    public byte[] compressedChunkData;
     public boolean includeInitialize;
     private int tempLength;
     private static byte[] temp = new byte[196864];

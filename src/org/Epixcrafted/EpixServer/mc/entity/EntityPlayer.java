@@ -3,6 +3,9 @@ package org.Epixcrafted.EpixServer.mc.entity;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.Epixcrafted.EpixServer.EpixServer;
+import org.Epixcrafted.EpixServer.mc.world.Chunk;
+
 public class EntityPlayer implements Entity {
 	
 	private int entityId;
@@ -20,7 +23,7 @@ public class EntityPlayer implements Entity {
 	private short food;
 	private float saturation;
 	
-   public final List loadedChunks = new LinkedList();
+   public final List<Chunk> loadedChunks = new LinkedList<Chunk>();
         
 	public EntityPlayer(int entityId, String name) {
 		this(entityId, name, 0D, 0D, 0D, 0D, 0F, 0F, true, (short)20, (short)20, 5F);
@@ -35,7 +38,7 @@ public class EntityPlayer implements Entity {
 	}
 	
 	public EntityPlayer(int entityId, String name, double x, double y, double z, double stance, float yaw, float pitch, boolean onGround, short health, short food, float saturation) {
-		this.entityId = entityId;
+		this.entityId = entityId != -1 ? entityId : (++EpixServer.lastEntityId);
 		this.name = name;
 		this.x = x;
 		this.y = y;

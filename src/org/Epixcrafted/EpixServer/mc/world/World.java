@@ -1,7 +1,8 @@
 package org.Epixcrafted.EpixServer.mc.world;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import org.Epixcrafted.EpixServer.mc.Location;
 import org.Epixcrafted.EpixServer.mc.entity.Entity;
@@ -9,14 +10,21 @@ import org.Epixcrafted.EpixServer.mc.material.block.Block;
 
 public class World {
 	
-	private ArrayList<Entity> entityList;
+	private String name;
 	
-	public World() {
-		
+	private List<Entity> entityList;
+	protected Set<Chunk> activeChunkSet;
+
+	private int time;
+	
+	public World(String name) {
+		this.name = name;
+		entityList = Collections.emptyList();
+		activeChunkSet = Collections.emptySet();
 	}
 	
 	public String getWorldName() {
-		return null;
+		return name;
 	}
 	
 	public Location getSpawnLocation() {
@@ -24,47 +32,62 @@ public class World {
 	}
 	
 	public void setSpawnLocation(Location location) {
-		
+		//TODO
 	}
 	
 	public Chunk getChunkAt(int x, int z) {
+		x = x >> 4; 
+		z = z >> 4;
+		for (Chunk chunk : activeChunkSet) {
+			if (chunk.x == x && chunk.z == z) return chunk; 
+		}
 		return null;
 	}
 	
 	public Block getBlockAt(int x, int y, int z) {
-		return null;
+		//return getChunkAt(x, z).getBlockId(x, y, z);
+		return null; //TODO
+	}
+	
+	public int getBlockIdAt(int x, int y, int z) {
+		return getChunkAt(x, z).getBlockId(x, y, z);
+	}
+	
+	public void setBlockAt(int x, int y, int z, int blockId) {
+		if (!isChunkLoaded(x,z)) return;
+		getChunkAt(x, z).setBlockAt(x, y, z, blockId);
 	}
 	
 	public boolean isChunkLoaded(int x, int z) {
-		return false;
+		return getChunkAt(x, z) != null ? true : false;
 	}
 	
 	public Chunk[] getLoadedChunks() {
-		return null;
+		return (Chunk[]) activeChunkSet.toArray();
 	}
 	
 	public void loadChunk(int x, int y) {
-		
+		//TODO
 	}
 	
 	public void unloadChunk(int x, int y) {
-		
+		//TODO
 	}
 	
 	public int getTime() {
-		return 0;
+		return time;
 	}
 	
 	public void setTime(int time) {
-		time = time > 24000 ? 24000 : time;
+		this.time = time > 24000 ? 24000 : time;
 	}
 	
 	public Biome getBiome(int x, int z) {
-		return null;
+		return null;//TODO
 	}
 	
 	public void setBiome(int x, int y, Biome biome) {
-		
+		//TODO
 	}
 	
 	public List<Entity> getEntities() {
@@ -72,18 +95,14 @@ public class World {
 	}
 
 	public void save() {
-		
+		//TODO
 	}
 	
 	public long getSeed() {
-		return 0;
+		return 0; //TODO
 	}
-	
-	public boolean getPVP() {
-		return true;
-	}
-	
-	public void setPVP(boolean pvp) {
-		
+
+	public void update() {
+		setTime(getTime() + 1);
 	}
 }

@@ -1,15 +1,14 @@
 package org.Epixcrafted.EpixServer.chat;
 
-import org.Epixcrafted.EpixServer.EpixServer;
-import org.Epixcrafted.EpixServer.engine.Server;
+import org.Epixcrafted.EpixServer.engine.IServer;
 
 public class ConsoleSender implements CommandSender {
 	
 	private static ConsoleSender instance;
 	
-	private Server server;
+	private IServer server;
 	
-	public ConsoleSender(Server server) {
+	public ConsoleSender(IServer server) {
 		if (instance != null) {
 			throw new RuntimeException();
 		}
@@ -23,13 +22,13 @@ public class ConsoleSender implements CommandSender {
 	}
 	
 	@Override
-	public Server getServer() {
+	public IServer getServer() {
 		return server;
 	}
 
 	@Override
 	public void sendMessage(String message) {
-        ((EpixServer)server).getLogger().info(cutColourCodes(message));
+        server.getLogger().info(cutColourCodes(message));
 	}
 	
 	public String cutColourCodes(String string) {

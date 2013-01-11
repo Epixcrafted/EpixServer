@@ -4,6 +4,7 @@ import org.Epixcrafted.EpixServer.mc.ItemStack;
 import org.Epixcrafted.EpixServer.misc.NotSupportedOperationException;
 import org.jboss.netty.buffer.ChannelBuffer;
 
+@SuppressWarnings("unused")
 public class Packet5Equip extends Packet {
 	
 	private int entityId;

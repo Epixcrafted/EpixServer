@@ -2,6 +2,7 @@ package org.Epixcrafted.EpixServer.mc.entity;
 
 public interface Entity {
 
+	int lastEntityId = 0;
 	public int getEntityId();
 	public double getX();
 	public double getY();
