@@ -1,17 +1,15 @@
 package org.Epixcrafted.EpixServer.mc.material.block;
 
-import java.util.ArrayList;
-
 public class BlockList {
 	
-	private static ArrayList<Block> list;
+	private static Block[] blocks = new Block[4096];
 	
 	private static void add(EpixBlock block) {
-		list.set(block.getId(), block);
+		blocks[block.getId()] = block;
 	}
 	
 	public static Block get(int id) {
-		return list.get(id);
+		return blocks[id];
 	}
 	
 	static {

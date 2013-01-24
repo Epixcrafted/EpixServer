@@ -28,12 +28,13 @@ public class TickCounter extends Thread implements Runnable {
 				tps = tps * 0.95F + (1000 / (currTimeMillis-sysMillis)) * 0.05F;
 				currentTick++;
 				new UpdateSessionExecutor(server).start();
+				new UpdateWorldExecutor(server).start();
 				sysMillis = currTimeMillis;
 			}
 			try {
 				sleep(50);
 			} catch (InterruptedException e) {
-				e.printStackTrace();
+				
 			}
 		}
 	}

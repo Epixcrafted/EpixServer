@@ -19,12 +19,16 @@ public class ConsoleReaderThread extends Thread implements Runnable {
 	@Override
 	public void run() {
 		while(true) {
-			String read = scanner.nextLine();
-			if (read.startsWith("/")) read = read.substring(1);
 			try {
-				((EpixServer)console.getServer()).getCommandList().executeCommand(read, console);
+				String read = scanner.nextLine();
+				if (read.startsWith("/")) read = read.substring(1);
+				try {
+					((EpixServer)console.getServer()).getCommandList().executeCommand(read, console);
+				} catch (Exception e) {
+					((EpixServer)console.getServer()).getLogger().info("Caught exception while executing command \"/" + read + "\": " + e.getMessage());
+				}
 			} catch (Exception e) {
-				((EpixServer)console.getServer()).getLogger().info("Caught exception while executing command \"/" + read + "\": " + e.getMessage());
+				
 			}
 		}
 	}

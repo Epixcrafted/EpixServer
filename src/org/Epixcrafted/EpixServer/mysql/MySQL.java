@@ -2,8 +2,7 @@ package org.Epixcrafted.EpixServer.mysql;
 
 import java.sql.*;
 
-public class MySQL
-{
+public class MySQL {
 	
 	public String user;
 	public String pass;
@@ -16,6 +15,7 @@ public class MySQL
 	private Statement stmt;
 	
 	public MySQL() {
+		
 	}
 	
 	public void connect(String user, String pass, String host, String base) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
@@ -35,7 +35,7 @@ public class MySQL
 			if (connected) {
 				connection.close();
 				return true;
-			} else{
+			} else {
 				return false;
 			}
 		} catch (Exception e) {
@@ -49,8 +49,10 @@ public class MySQL
 		try {
 			rs = null;
 			stmt = null;
-			stmt = connection.createStatement();
-			rs = stmt.executeQuery(q);
+			if (connected) {
+				stmt = connection.createStatement();
+				rs = stmt.executeQuery(q);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			connected = false;
@@ -62,8 +64,10 @@ public class MySQL
 	public void update(String q) {
 		try {
 			stmt = null;
-			stmt = connection.createStatement();
-			stmt.executeUpdate(q);
+			if (connected) {
+				stmt = connection.createStatement();
+				stmt.executeUpdate(q);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			connected = false;

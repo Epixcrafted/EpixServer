@@ -3,8 +3,6 @@ package org.Epixcrafted.EpixServer;
 import java.io.File;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
@@ -18,9 +16,12 @@ import org.Epixcrafted.EpixServer.engine.IServer;
 import org.Epixcrafted.EpixServer.engine.player.Session;
 import org.Epixcrafted.EpixServer.engine.player.SessionList;
 import org.Epixcrafted.EpixServer.mc.world.World;
+import org.Epixcrafted.EpixServer.mc.world.gen.IGenerator;
+import org.Epixcrafted.EpixServer.mc.world.gen.SimpleGenerator;
 import org.Epixcrafted.EpixServer.mysql.MySQL;
 import org.Epixcrafted.EpixServer.mysql.MySQLHandler;
 import org.Epixcrafted.EpixServer.threads.ConsoleReaderThread;
+import org.Epixcrafted.EpixServer.threads.GenerationExecutor;
 import org.Epixcrafted.EpixServer.threads.TickCounter;
 
 import org.jboss.netty.bootstrap.ServerBootstrap;
@@ -49,7 +50,11 @@ public class EpixServer implements IServer {
 	private final CommandSender console = new ConsoleSender(this);
 	private final Logger log = Logger.getLogger("EpixServer");
 	
+	private Thread[] threads = new Thread[8];
+	
 	private int maxPlayers;
+	
+	private World[] worlds;
 	
 	public static int lastEntityId = 0;
 	
@@ -61,12 +66,12 @@ public class EpixServer implements IServer {
         bootstrap.setPipelineFactory(new EpixPipelineFactory(this));
         bootstrap.setOption("backlog", 500);
         bootstrap.setOption("connectTimeoutMillis", 10000);
-		readConfiguration();
 	}
 	
 	@Override
-	public void start() {
+	public void startServer() {
 		log.info("EpixServer is starting... (implementing MC " + getMinecraftVersion() + " version)");
+		readConfiguration();
 		try {
 			bootstrap.bind(new InetSocketAddress(ip, port));
 			log.info("Started listening on " + ip + ":" + port);
@@ -77,22 +82,29 @@ public class EpixServer implements IServer {
 		}
 		setupConsole();
 		setupMysqlConnection();
+		setupWorlds();
 		setupMisc();
 	}
 
 	@Override
-	public void shutdown() {
-		for (Session session : getSessionList()) {
-			session.disconnect("Server is stopping...");
+	public void shutdownServer() {
+		getLogger().info("Server is stopping...");
+		if (getSessionList().size() != 0) {
+			for (Session session : getSessionList()) {
+				session.disconnect("Server is stopping...");
+			}
 		}
+		for (Thread th : threads) {
+			if (th != null) if (th.isAlive()) th.interrupt();
+		}
+		getLogger().info("Server stopped.");
 		bootstrap.getFactory().releaseExternalResources();
-		System.out.println("Server stopped..");
         System.exit(0);
 	}
 
 	@Override
 	public String getMinecraftVersion() {
-		return "1.4.5";
+		return "1.4.7";
 	}
 	
 	public AllCommands getCommandList() {
@@ -129,8 +141,8 @@ public class EpixServer implements IServer {
 		return mysqlSalt;
 	}
 	
-	public List<World> getWorldList() {
-		return Collections.<World> emptyList();
+	public World[] getWorldList() {
+		return worlds;
 	}
 	
 	@Override
@@ -172,7 +184,7 @@ public class EpixServer implements IServer {
 	}
 	
 	private void setupConsole() {
-		new ConsoleReaderThread(console).start();
+		(threads[0] = new ConsoleReaderThread(console)).start();
 	}
 	
 	private void setupMysqlConnection() {
@@ -189,6 +201,14 @@ public class EpixServer implements IServer {
 	}
 	
 	private void setupMisc() {
-		new TickCounter(this).start();
+		(threads[1] = new TickCounter(this)).start();
+	}
+	
+	private void setupWorlds() {
+		//TODO rewrite! temp code.
+		worlds = new World[1];
+		worlds[0] = new World(this, "world");
+		IGenerator gen = new SimpleGenerator(worlds[0]);
+		(threads[2] = new GenerationExecutor(gen)).start();
 	}
 }

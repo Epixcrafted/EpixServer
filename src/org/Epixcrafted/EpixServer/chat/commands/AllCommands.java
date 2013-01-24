@@ -29,16 +29,16 @@ public class AllCommands {
 				Command c = ic.next();
 				if (c.getCommandName().equalsIgnoreCase(string.split(" ")[0])) {
 					String[] args = new String[string.split(" ").length-1];
-					for (int i = 1; i < args.length; i++) {
-						args[i-1] = string.split(" ")[i];
+					for (int i = 0; i < args.length; i++) {
+						args[i] = string.split(" ")[i+1];
 					}
 					return c.executeCommand(sender, args);
 				}
 				for (String alias : c.getAliases()) {
 					if (alias.equalsIgnoreCase(string.split(" ")[0])) {
 						String[] args = new String[string.split(" ").length-1];
-						for (int i = 1; i < args.length; i++) {
-							args[i-1] = string.split(" ")[i];
+						for (int i = 0; i < args.length; i++) {
+							args[i] = string.split(" ")[i+1];
 						}
 						return c.executeCommand(sender, args);
 					}

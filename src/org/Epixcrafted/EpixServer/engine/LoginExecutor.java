@@ -1,10 +1,10 @@
-package org.Epixcrafted.EpixServer.login;
+package org.Epixcrafted.EpixServer.engine;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.Epixcrafted.EpixServer.EpixServer;
-import org.Epixcrafted.EpixServer.misc.MD5;
+import org.Epixcrafted.EpixServer.tools.MD5;
 
 public class LoginExecutor {
 
@@ -25,7 +25,6 @@ public class LoginExecutor {
 				checked = true;
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -42,7 +41,6 @@ public class LoginExecutor {
 				checkedGroup = false;
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			checkedGroup = false;
 		}
@@ -52,7 +50,7 @@ public class LoginExecutor {
 		
 		try {
 			color = resultGroup.getString("chat");
-		}catch (Exception e) {
+		} catch (Exception e) {
             e.printStackTrace();
 		}
 		return true;

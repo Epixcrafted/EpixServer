@@ -108,10 +108,10 @@ public class Session {
     public void disconnect(String reason) {
         getServer().getSessionListClass().remove(this);
         if (channel.isOpen()) {
-        	if (reason.equalsIgnoreCase(reason)) {
+        	if (reason.equalsIgnoreCase("disconnect.quitting") || reason.equalsIgnoreCase("")) {
         		PlayerActionLogger.playerDisconnect(this);
         	} else {
-        		PlayerActionLogger.playerKick(this);
+        		PlayerActionLogger.playerKick(this, reason);
         	}
         	try {
 				channel.write(Packet.write(new Packet255Disconnect(reason), ChannelBuffers.dynamicBuffer())).addListener(ChannelFutureListener.CLOSE);
@@ -121,7 +121,7 @@ public class Session {
         }
         dispose();
         state = Connection.DISCONNECTED;
-        channel.close();
+        channel.close().addListener(ChannelFutureListener.CLOSE);
     }
 
     public EpixServer getServer() {

@@ -63,6 +63,51 @@ public class Packet56MapChunks extends Packet {
         }
 	}
 	
+	public Packet56MapChunks(Chunk[] chunks) {
+		int c_size = chunks.length;
+        this.chunkPosX = new int[c_size];
+        this.chunkPosZ = new int[c_size];
+        this.chunkExistFlag = new int[c_size];
+        this.chunkHasAddSectionFlag = new int[c_size];
+        this.compressedData = new byte[c_size][];
+        int dataLength = 0;
+
+        for (int numChunk = 0; numChunk < c_size; ++numChunk)
+        {
+            Chunk chunk = (Chunk)chunks[numChunk];
+            Packet51MapChunkData chunkData = Packet51MapChunk.getMapChunkData(chunk, true, 65535);
+
+            if (chunkDataNotCompressed.length < dataLength + chunkData.compressedData.length)
+            {
+                byte[] DataNotCompressedLength = new byte[dataLength + chunkData.compressedData.length];
+                System.arraycopy(chunkDataNotCompressed, 0, DataNotCompressedLength, 0, chunkDataNotCompressed.length);
+                chunkDataNotCompressed = DataNotCompressedLength;
+            }
+
+            System.arraycopy(chunkData.compressedData, 0, chunkDataNotCompressed, dataLength, chunkData.compressedData.length);
+            dataLength += chunkData.compressedData.length;
+            this.chunkPosX[numChunk] = chunk.x;
+            this.chunkPosZ[numChunk] = chunk.z;
+            this.chunkExistFlag[numChunk] = chunkData.chunkExistFlag;
+            this.chunkHasAddSectionFlag[numChunk] = chunkData.chunkHasAddSectionFlag;
+            this.compressedData[numChunk] = chunkData.compressedData;
+        }
+
+        Deflater deflater = new Deflater(-1);
+
+        try
+        {
+        	deflater.setInput(chunkDataNotCompressed, 0, dataLength);
+        	deflater.finish();
+            this.chunkDataBuffer = new byte[dataLength];
+            this.dataLength = deflater.deflate(this.chunkDataBuffer);
+        }
+        finally
+        {
+        	deflater.end();
+        }
+	}
+	
 	@Override
 	public int getPacketId() {
 		return 0x38;

@@ -1,4 +1,4 @@
-package org.Epixcrafted.EpixServer.misc;
+package org.Epixcrafted.EpixServer.tools;
 
 import java.nio.charset.Charset;
 import java.security.MessageDigest;

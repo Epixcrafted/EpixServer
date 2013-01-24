@@ -4,6 +4,7 @@ import org.Epixcrafted.EpixServer.EpixServer;
 import org.Epixcrafted.EpixServer.engine.player.Session;
 import org.Epixcrafted.EpixServer.misc.NotSupportedOperationException;
 import org.Epixcrafted.EpixServer.protocol.Packet;
+import org.jboss.netty.channel.ChannelFutureListener;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.ChannelStateEvent;
 import org.jboss.netty.channel.ExceptionEvent;
@@ -56,7 +57,8 @@ public class PlayerHandler extends SimpleChannelUpstreamHandler {
 			session.disconnect("Internal server error");
     	} catch (Exception exc) {
     		server.getLogger().severe("Caught exception: " + exc.getCause());
+    		server.getLogger().severe("Line: " + exc.getStackTrace()[0]);
     	}
-    	ctx.getChannel().close();
+    	ctx.getChannel().close().addListener(ChannelFutureListener.CLOSE);
     }
 }

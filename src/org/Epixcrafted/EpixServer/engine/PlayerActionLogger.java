@@ -3,6 +3,7 @@ package org.Epixcrafted.EpixServer.engine;
 import org.Epixcrafted.EpixServer.chat.Colour;
 import org.Epixcrafted.EpixServer.engine.player.Player;
 import org.Epixcrafted.EpixServer.engine.player.Session;
+import org.Epixcrafted.EpixServer.engine.player.Session.Connection;
 import org.Epixcrafted.EpixServer.protocol.Packet20NamedEntity;
 import org.Epixcrafted.EpixServer.protocol.Packet29DestroyEntity;
 import org.Epixcrafted.EpixServer.protocol.Packet31Move;
@@ -85,9 +86,11 @@ public class PlayerActionLogger {
 	 */
 	public static void playerDisconnect(Session session) {
 		session.getServer().getLogger().info(session.getPlayer().getName() + " lost connection. (safe quit)");
-		for (Session s : session.getServer().getSessionList()) {
+		if (session.getConnectionState() == Connection.PLAYING) {
+			for (Session s : session.getServer().getSessionList()) {
 				s.send(new Packet29DestroyEntity((byte)1, new int[] { s.getPlayer().getEntityId() }));
 				s.send(new Packet3Chat(Colour.YELLOW + session.getPlayer().getName() + " left the game."));
+			}
 		}
 	}
 	
@@ -95,11 +98,14 @@ public class PlayerActionLogger {
 	 * Should be fired on special occasions, such as receiving invalid packets or kicking player
 	 * @param player
 	 */
-	public static void playerKick(Session session) {
+	public static void playerKick(Session session, String reason) {
 		session.getServer().getLogger().info(session.getPlayer().getName() + " lost connection. (kick)");
-		for (Session s : session.getServer().getSessionList()) {
-			if (!s.getPlayer().equals(session.getPlayer())) s.send(new Packet29DestroyEntity((byte)1, new int[] { s.getPlayer().getEntityId() }));
-			if (!s.getPlayer().equals(session.getPlayer())) s.send(new Packet3Chat(Colour.YELLOW + session.getPlayer().getName() + " was kicked from the game."));
+		session.getServer().getLogger().info("Reason: " + reason);
+		if (session.getConnectionState() == Connection.PLAYING) {
+			for (Session s : session.getServer().getSessionList()) {
+				if (!s.getPlayer().equals(session.getPlayer())) s.send(new Packet29DestroyEntity((byte)1, new int[] { s.getPlayer().getEntityId() }));
+				if (!s.getPlayer().equals(session.getPlayer())) s.send(new Packet3Chat(Colour.YELLOW + session.getPlayer().getName() + " was kicked. (" + reason + ")"));
+			}
 		}
 	}
 }

@@ -1,9 +1,9 @@
 package org.Epixcrafted.EpixServer.mc.world;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
+import org.Epixcrafted.EpixServer.engine.IServer;
 import org.Epixcrafted.EpixServer.mc.Location;
 import org.Epixcrafted.EpixServer.mc.entity.Entity;
 import org.Epixcrafted.EpixServer.mc.material.block.Block;
@@ -13,14 +13,17 @@ public class World {
 	private String name;
 	
 	private List<Entity> entityList;
-	protected Set<Chunk> activeChunkSet;
+	protected List<Chunk> activeChunkList;
 
 	private int time;
+
+	private IServer server;
 	
-	public World(String name) {
+	public World(IServer server, String name) {
 		this.name = name;
-		entityList = Collections.emptyList();
-		activeChunkSet = Collections.emptySet();
+		entityList = new ArrayList<Entity>();
+		activeChunkList = new ArrayList<Chunk>();
+		this.server = server;
 	}
 	
 	public String getWorldName() {
@@ -36,9 +39,7 @@ public class World {
 	}
 	
 	public Chunk getChunkAt(int x, int z) {
-		x = x >> 4; 
-		z = z >> 4;
-		for (Chunk chunk : activeChunkSet) {
+		for (Chunk chunk : activeChunkList) {
 			if (chunk.x == x && chunk.z == z) return chunk; 
 		}
 		return null;
@@ -54,7 +55,7 @@ public class World {
 	}
 	
 	public void setBlockAt(int x, int y, int z, int blockId) {
-		if (!isChunkLoaded(x,z)) return;
+		if (!isChunkLoaded(x,z)) loadChunk(x, z);
 		getChunkAt(x, z).setBlockAt(x, y, z, blockId);
 	}
 	
@@ -63,11 +64,12 @@ public class World {
 	}
 	
 	public Chunk[] getLoadedChunks() {
-		return (Chunk[]) activeChunkSet.toArray();
+		return (Chunk[]) activeChunkList.toArray();
 	}
 	
 	public void loadChunk(int x, int y) {
 		//TODO
+		activeChunkList.add(new Chunk(this, x, y));
 	}
 	
 	public void unloadChunk(int x, int y) {
@@ -79,7 +81,7 @@ public class World {
 	}
 	
 	public void setTime(int time) {
-		this.time = time > 24000 ? 24000 : time;
+		this.time = time > 24000 ? 0 : time;
 	}
 	
 	public Biome getBiome(int x, int z) {
@@ -104,5 +106,9 @@ public class World {
 
 	public void update() {
 		setTime(getTime() + 1);
+	}
+
+	public IServer getServer() {
+		return server;
 	}
 }

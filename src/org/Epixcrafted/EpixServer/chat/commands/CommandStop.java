@@ -16,7 +16,7 @@ public class CommandStop implements Command {
 
 	@Override
 	public boolean executeCommand(CommandSender sender, String[] args) {
-		sender.getServer().shutdown();
+		sender.getServer().shutdownServer();
 		return true;
 	}
 

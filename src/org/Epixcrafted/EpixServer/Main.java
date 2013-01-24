@@ -10,7 +10,7 @@ public class Main {
 	
 	public boolean startServer(String[] args) {
 		if (server != null) return false;
-		(server = new EpixServer()).start();
+		(server = new EpixServer()).startServer();
 		return true;
 	}
 

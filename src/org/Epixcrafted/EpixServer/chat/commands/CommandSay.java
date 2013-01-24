@@ -18,9 +18,10 @@ public class CommandSay implements Command {
 	@Override
 	public boolean executeCommand(CommandSender sender, String[] args) {
 		String message = "";
-		for (String arg : args) message += " " + arg;
-		message = message.substring(1).replace("§*", "");
-		sender.sendMessage(Colour.PURPLE + "[Server] " + message);
+		for (String arg : args) {
+			message += " " + arg;
+		}
+		sender.sendMessage(Colour.PINK + "[Server]" + Colour.RESET + message);
 		return true;
 	}
 

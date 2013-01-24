@@ -4,9 +4,9 @@ import java.util.logging.Logger;
 
 public interface IServer {
 
-	public void start();
+	public void startServer();
 	
-	public void shutdown();
+	public void shutdownServer();
 	
 	public String getMinecraftVersion();
 	

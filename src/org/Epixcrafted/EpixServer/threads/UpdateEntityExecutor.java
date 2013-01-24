@@ -25,8 +25,6 @@ public class UpdateEntityExecutor extends Thread implements Runnable {
 	}
 	
 	public void update() {
-		synchronized(server.getSessionListClass()) {
-			server.getSessionListClass().update();
-		}
+		server.getMinecraftVersion(); //lol
 	}
 }
