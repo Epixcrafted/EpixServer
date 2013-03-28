@@ -1,6 +1,7 @@
 package org.Epixcrafted.EpixServer.tools.nbt;
 
 import java.io.DataInput;
+import java.io.DataOutput;
 import java.io.IOException;
 
 import org.jboss.netty.buffer.ChannelBuffer;
@@ -30,6 +31,14 @@ public class NBTTagByte extends NBTBase
         return par1DataOutput;
     }
 
+    /**
+     * Write the actual data contents of the tag, implemented in NBT extension classes
+     */
+	DataOutput write(DataOutput par1DataOutput) throws IOException {
+        par1DataOutput.writeByte(this.data);
+        return par1DataOutput;
+	}
+	
     /**
      * Read the actual data contents of the tag, implemented in NBT extension classes
      */

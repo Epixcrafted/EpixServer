@@ -1,6 +1,7 @@
 package org.Epixcrafted.EpixServer.tools.nbt;
 
 import java.io.DataInput;
+import java.io.DataOutput;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
@@ -31,6 +32,24 @@ public class NBTTagCompound extends NBTBase
      * Write the actual data contents of the tag, implemented in NBT extension classes
      */
     ChannelBuffer write(ChannelBuffer par1DataOutput)
+    {
+        Iterator var2 = this.tagMap.values().iterator();
+
+        while (var2.hasNext())
+        {
+            NBTBase var3 = (NBTBase)var2.next();
+            NBTBase.writeNamedTag(var3, par1DataOutput);
+        }
+
+        par1DataOutput.writeByte(0);
+        return par1DataOutput;
+    }
+    
+    /**
+     * Write the actual data contents of the tag, implemented in NBT extension classes
+     * @throws IOException 
+     */
+    DataOutput write(DataOutput par1DataOutput) throws IOException
     {
         Iterator var2 = this.tagMap.values().iterator();
 

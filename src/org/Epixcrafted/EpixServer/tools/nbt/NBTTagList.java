@@ -1,6 +1,7 @@
 package org.Epixcrafted.EpixServer.tools.nbt;
 
 import java.io.DataInput;
+import java.io.DataOutput;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -33,6 +34,33 @@ public class NBTTagList extends NBTBase
      * Write the actual data contents of the tag, implemented in NBT extension classes
      */
     ChannelBuffer write(ChannelBuffer par1DataOutput)
+    {
+        if (!this.tagList.isEmpty())
+        {
+            this.tagType = ((NBTBase)this.tagList.get(0)).getId();
+        }
+        else
+        {
+            this.tagType = 1;
+        }
+
+        par1DataOutput.writeByte(this.tagType);
+        par1DataOutput.writeInt(this.tagList.size());
+        Iterator var2 = this.tagList.iterator();
+
+        while (var2.hasNext())
+        {
+            NBTBase var3 = (NBTBase)var2.next();
+            par1DataOutput = var3.write(par1DataOutput);
+        }
+        return par1DataOutput;
+    }
+    
+    /**
+     * Write the actual data contents of the tag, implemented in NBT extension classes
+     * @throws IOException 
+     */
+    DataOutput write(DataOutput par1DataOutput) throws IOException
     {
         if (!this.tagList.isEmpty())
         {

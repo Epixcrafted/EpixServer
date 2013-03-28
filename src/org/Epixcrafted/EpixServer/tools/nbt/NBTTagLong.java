@@ -1,6 +1,7 @@
 package org.Epixcrafted.EpixServer.tools.nbt;
 
 import java.io.DataInput;
+import java.io.DataOutput;
 import java.io.IOException;
 
 import org.jboss.netty.buffer.ChannelBuffer;
@@ -25,6 +26,16 @@ public class NBTTagLong extends NBTBase
      * Write the actual data contents of the tag, implemented in NBT extension classes
      */
     ChannelBuffer write(ChannelBuffer par1DataOutput)
+    {
+        par1DataOutput.writeLong(this.data);
+        return par1DataOutput;
+    }
+    
+    /**
+     * Write the actual data contents of the tag, implemented in NBT extension classes
+     * @throws IOException 
+     */
+    DataOutput write(DataOutput par1DataOutput) throws IOException
     {
         par1DataOutput.writeLong(this.data);
         return par1DataOutput;

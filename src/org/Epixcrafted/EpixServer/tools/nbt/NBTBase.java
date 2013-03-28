@@ -1,8 +1,10 @@
 package org.Epixcrafted.EpixServer.tools.nbt;
 
 import java.io.DataInput;
+import java.io.DataOutput;
 import java.io.IOException;
 
+import org.Epixcrafted.EpixServer.tools.Utils;
 import org.jboss.netty.buffer.ChannelBuffer;
 
 public abstract class NBTBase
@@ -17,6 +19,13 @@ public abstract class NBTBase
      * @return 
      */
     abstract ChannelBuffer write(ChannelBuffer par1DataOutput);
+    
+    /**
+     * Write the actual data contents of the tag, implemented in NBT extension classes
+     * @return 
+     * @throws IOException 
+     */
+    abstract DataOutput write(DataOutput par1DataOutput) throws IOException;
 
     /**
      * Read the actual data contents of the tag, implemented in NBT extension classes
@@ -105,14 +114,22 @@ public abstract class NBTBase
 
         if (par0NBTBase.getId() != 0)
         {
-        	par1DataOutput.writeShort(par0NBTBase.getName().length());
-            for(int i = 0; i < par0NBTBase.getName().length(); ++i) {
-            	par1DataOutput.writeChar(par0NBTBase.getName().charAt(i));
-            }
+        	Utils.writeStringToBuffer(par1DataOutput, par0NBTBase.getName());
             par1DataOutput = par0NBTBase.write(par1DataOutput);
         }
         return par1DataOutput;
     }
+    
+	public static void writeNamedTag(NBTBase par0NBTBase,
+			DataOutput par1DataOutput) throws IOException {
+        par1DataOutput.writeByte(par0NBTBase.getId());
+
+        if (par0NBTBase.getId() != 0)
+        {
+        	par1DataOutput.writeUTF(par0NBTBase.getName());
+            par0NBTBase.write(par1DataOutput);
+        }
+	}
 
     /**
      * Creates and returns a new tag of the specified type, or null if invalid.
