@@ -16,12 +16,9 @@ import org.Epixcrafted.EpixServer.engine.IServer;
 import org.Epixcrafted.EpixServer.engine.player.Session;
 import org.Epixcrafted.EpixServer.engine.player.SessionList;
 import org.Epixcrafted.EpixServer.mc.world.World;
-import org.Epixcrafted.EpixServer.mc.world.gen.IGenerator;
-import org.Epixcrafted.EpixServer.mc.world.gen.SimpleGenerator;
 import org.Epixcrafted.EpixServer.mysql.MySQL;
 import org.Epixcrafted.EpixServer.mysql.MySQLHandler;
 import org.Epixcrafted.EpixServer.threads.ConsoleReaderThread;
-import org.Epixcrafted.EpixServer.threads.GenerationExecutor;
 import org.Epixcrafted.EpixServer.threads.TickCounter;
 
 import org.jboss.netty.bootstrap.ServerBootstrap;
@@ -81,7 +78,7 @@ public class EpixServer implements IServer {
 			System.exit(0);
 		}
 		setupConsole();
-		setupMysqlConnection();
+		//setupMysqlConnection();
 		setupWorlds();
 		setupMisc();
 	}
@@ -147,14 +144,7 @@ public class EpixServer implements IServer {
 	
 	@Override
 	public int getOnlinePlayerCount() {
-		int online = 0;
-		for (Session s : getSessionList()) {
-			if (online > maxPlayers) continue;
-			if (s.getPlayer() != null) {
-				online++;
-			}
-		}
-		return online;
+		return getSessionList().size();
 	}
 	
 	@Override
@@ -164,9 +154,15 @@ public class EpixServer implements IServer {
 	
 	@Override
 	public String[] getOnlinePlayers() {
-		String[] players = new String[getOnlinePlayerCount()];
-		for (int i = 0; i < getOnlinePlayerCount(); i++) {
-			players[i] = getSessionList().get(i).getPlayer().getName();;
+		int online = 0;
+		for (Session s : getSessionList()) {
+			if (s.getPlayer() != null) {
+				online++;
+			}
+		}
+		String[] players = new String[online];
+		for (int i = 0; i < online; i++) {
+			if (getSessionList().get(i).getPlayer() != null) players[i] = getSessionList().get(i).getPlayer().getName();
 		}
 		return players;
 	}
@@ -187,6 +183,7 @@ public class EpixServer implements IServer {
 		(threads[0] = new ConsoleReaderThread(console)).start();
 	}
 	
+	@SuppressWarnings("unused")
 	private void setupMysqlConnection() {
 		try {
 			log.info("Connecting to the MySQL server...");
@@ -196,6 +193,7 @@ public class EpixServer implements IServer {
 			log.info("Successfully connected to the MySQL server.");
 		} catch (Exception e) {
 			log.severe("Cannot connect to the MySQL server! Retrying...");
+			log.severe("Exception: " + e.getClass());
 			setupMysqlConnection();
 		}
 	}
@@ -208,7 +206,5 @@ public class EpixServer implements IServer {
 		//TODO rewrite! temp code.
 		worlds = new World[1];
 		worlds[0] = new World(this, "world");
-		IGenerator gen = new SimpleGenerator(worlds[0]);
-		(threads[2] = new GenerationExecutor(gen)).start();
 	}
 }

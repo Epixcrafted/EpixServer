@@ -121,7 +121,7 @@ public class Session {
         }
         dispose();
         state = Connection.DISCONNECTED;
-        channel.close().addListener(ChannelFutureListener.CLOSE);
+        closeChannel();
     }
 
     public EpixServer getServer() {
@@ -149,6 +149,10 @@ public class Session {
     	boolean isConnected = this.channel.isOpen();
     	if (!isConnected) this.setConnectionState(Connection.DISCONNECTED);
     	return isConnected;
+    }
+    
+    private void closeChannel() { 
+        channel.close().addListener(ChannelFutureListener.CLOSE);
     }
     
     public enum Connection {
