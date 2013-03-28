@@ -1,5 +1,6 @@
 package org.Epixcrafted.EpixServer.mc.world;
 
+import org.Epixcrafted.EpixServer.engine.io.ChunkCoordIntPair;
 import org.Epixcrafted.EpixServer.mc.entity.Entity;
 
 public class Chunk {
@@ -20,6 +21,8 @@ public class Chunk {
      * Contains a 16x16 mapping on the X/Z plane of the biome ID to which each column belongs.
      */
 	private byte[] blockBiomeArray;
+
+	public int[] heightMap;
 	
 	public Chunk(World world, int x, int z) {
 		this.world = world;
@@ -73,5 +76,19 @@ public class Chunk {
 			storage = storageArrays[y >> 4] = new ExtendedBlockStorage(y >> 4 << 4);
 		}
 		storage.setExtBlockID(x, y & 15, z, blockId);
+	}
+
+	public void setBlocks(ExtendedBlockStorage[] var8) {
+		
+	}
+
+	public ExtendedBlockStorage[] getBlocks() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public ChunkCoordIntPair getChunkCoordIntPair() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
